@@ -46,25 +46,28 @@ public class UserController {
     @PutMapping("/userName")
     @PreAuthorize("hasAuthority('manager')")
     public ResponseEntity<?> updateUser(@Validated @RequestBody UserRequest userRequest) throws Exception {
-        logger.info("Request received for updating userStatus :{}", userRequest.toString());
+        logger.info("Request received for updating userStatus: {}", userRequest.toString());
         var userResponse = userService.updateUserByStatus(userRequest);
-        return switch (userResponse.getResultCode()) {
-            case 0 -> new ResponseEntity<>(userResponse, HttpStatus.OK);
-            default -> new ResponseEntity<>(userResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        };
+
+        if (userResponse.getResultCode() == 0) {
+            return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(userResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
     @DeleteMapping("/userName")
     @PreAuthorize("hasAuthority('manager')")
     public ResponseEntity<?> deleteUserByUserName(@Valid @RequestBody UserRequest userRequest) throws Exception {
-        logger.info("Request received for deleting user :{}", userRequest.toString());
+        logger.info("Request received for deleting user: {}", userRequest.toString());
         var userResponse = userService.deleteUserByUsername(userRequest);
-        return switch (userResponse.getResultCode()) {
-            case 0 -> new ResponseEntity<>(userResponse, HttpStatus.OK);
-            default -> new ResponseEntity<>(userResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        };
-    }
 
+        if (userResponse.getResultCode() == 0) {
+            return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(userResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

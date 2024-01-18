@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/copyUserManagment.iml" filepath="$PROJECT_DIR$/.idea/copyUserManagment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/userManagment/tests/tests/userManagment.iml" filepath="$PROJECT_DIR$/userManagment/tests/tests/userManagment.iml" />
+    </modules>
+  </component>
+</project>
