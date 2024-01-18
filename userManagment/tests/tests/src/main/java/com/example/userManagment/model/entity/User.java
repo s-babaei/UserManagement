@@ -4,7 +4,7 @@ import com.example.userManagment.model.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Collection;
+import javax.validation.constraints.Email;
 
 
 @Entity
@@ -27,9 +27,11 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
+    @Email
     private String email;
 
     private String password;
+
     @Column(name = "username", unique = true)
     private String username;
 

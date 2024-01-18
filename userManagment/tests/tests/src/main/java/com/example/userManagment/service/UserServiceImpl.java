@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,19 +39,25 @@ public class UserServiceImpl implements UserService {
         User user = mapper.convertValue(userRequest, User.class);
         user.setPassword(encoder.encode(userRequest.getPassword()));
         try {
-            user = userRepository.save(user);
-            logger.info("User created successfully, username: {}", user.getUsername());
-            userResponse.setResultCode(0);
-            userResponse.setResultMsg("successful");
+
+            if (userRepository.existsByUsername(user.getUsername())) {
+            logger.error("Error in creating user, username: {}. User with the same username already exists.", user.getUsername());
+                userResponse.setResultCode(409);
+                userResponse.setResultMsg("User with the same username already exists");
+            } else {
+                userRepository.save(user);
+                logger.info("User created successfully, username: {}", user.getUsername());
+                userResponse.setResultCode(0);
+                userResponse.setResultMsg("successful");
+            }
         } catch (Exception e) {
-            logger.info("Error in creating successfully, username: {}", user.getUsername());
+            logger.error("Error in creating user, username: {}", user.getUsername(), e);
             userResponse.setResultCode(500);
             userResponse.setResultMsg("Internal server error");
         }
 
         return userResponse;
     }
-
     @Override
     public UserResponse deleteUserByUsername(UserRequest userRequest) {
 
@@ -78,19 +86,25 @@ public class UserServiceImpl implements UserService {
     public UserResponse updateUserByStatus(UserRequest userRequest) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         User user = mapper.convertValue(userRequest, User.class);
-        user.setPassword(encoder.encode(userRequest.getPassword()));
         try {
+
             Optional<User> findByUsername = userRepository.findByUsername(user.getUsername());
             if (findByUsername.isPresent()) {
                 if (findByUsername.get().getUserStatus().equals(UserStatus.ACTIVE))
                     findByUsername.get().setUserStatus(UserStatus.NOTACTIVE);
-                userRepository.save(user);
+                else if (findByUsername.get().getUserStatus().equals(UserStatus.NOTACTIVE))
+                    findByUsername.get().setUserStatus(UserStatus.ACTIVE);
+                userRepository.save(findByUsername.get());
                 logger.info("User status updated successfully, username: {}", user.getUsername());
                 userResponse.setResultCode(0);
                 userResponse.setResultMsg("successful");
             }
+        } catch (IncorrectResultSizeDataAccessException e) {
+            logger.error("Error in updating user status, username: {} e: {}", user.getUsername(), e.getMessage());
+            userResponse.setResultCode(409);
+            userResponse.setResultMsg("Conflict");
         } catch (Exception e) {
-            logger.error("Error in updating user status, username: {}, e: {}", user.getUsername(), e.getMessage());
+            logger.error("Error in updating user status, username: {} e: {}", user.getUsername(), e.getMessage());
             userResponse.setResultCode(500);
             userResponse.setResultMsg("Internal server error");
         }
