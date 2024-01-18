@@ -1,0 +1,45 @@
+# ===============================
+# = DATABASE CONFIGURATION
+# ===============================
+#spring.datasource.url=jdbc:h2:mem:user-app;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#jdbc:h2:mem:user-app;MODE=Mysql;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS USER
+#spring.sql.init.platform=h2
+#spring.datasource.username=sa
+#spring.datasource.password=
+#spring.datasource.driver-class-name=org.h2.Driver
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    password: password
+    url: jdbc:mysql://localhost:3306/sso?createDatabaseIfNotExist=true
+    username: root
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: true
+
+
+#  HIBERNATE
+# ===============================
+
+# The SQL dialect makes Hibernate generate better SQL for the chosen database
+#spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+
+# Hibernate ddl auto (create, create-drop, validate, update)
+#spring.jpa.hibernate.ddl-auto = update
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: TRACE
+        type: TRACE
+server:
+  port: ${PORT:8081}
