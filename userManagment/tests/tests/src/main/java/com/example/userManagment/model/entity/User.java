@@ -2,9 +2,9 @@ package com.example.userManagment.model.entity;
 
 import com.example.userManagment.model.UserStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
-import javax.validation.constraints.Email;
 
 
 @Entity

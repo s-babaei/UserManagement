@@ -1,18 +1,17 @@
 package com.example.userManagment.service;
 
 
-import com.example.userManagment.model.dto.UserRequest;
-import com.example.userManagment.model.dto.UserResponse;
+import com.example.userManagment.model.dto.*;
 
 
 public interface UserService {
 
 
-   UserResponse saveUser(UserRequest userRequest);
+   UserResponse saveUser(UserSaveRequest userSaveRequest);
 
-    UserResponse deleteUserByUsername(UserRequest userRequest);
+    UserResponse deleteUserByUsername(UserDeletedRequest userDeletedRequest);
 
-    UserResponse updateUserByStatus(UserRequest userRequest) throws Exception;
+    UserResponse updateUserByStatus(UserUpdateRequest userUpdateRequest) throws Exception;
 
 
 

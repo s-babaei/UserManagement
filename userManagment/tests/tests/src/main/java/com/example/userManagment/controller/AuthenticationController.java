@@ -4,6 +4,7 @@ package com.example.userManagment.controller;
 import com.example.userManagment.configuration.JwtService;
 import com.example.userManagment.model.dto.GetTokenRequest;
 import com.example.userManagment.model.dto.GetTokenResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor

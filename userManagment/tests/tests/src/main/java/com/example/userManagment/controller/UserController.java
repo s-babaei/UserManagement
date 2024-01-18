@@ -1,9 +1,13 @@
 package com.example.userManagment.controller;
 
 
+import com.example.userManagment.model.dto.UserDeletedRequest;
 import com.example.userManagment.model.dto.UserRequest;
+import com.example.userManagment.model.dto.UserSaveRequest;
+import com.example.userManagment.model.dto.UserUpdateRequest;
 import com.example.userManagment.repository.UserRepository;
 import com.example.userManagment.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
@@ -30,10 +33,10 @@ public class UserController {
 
     @PostMapping("/")
     @PreAuthorize("hasAuthority('manager')")
-    public ResponseEntity<?> saveUser(@RequestBody @Valid UserRequest userRequest) throws Exception {
-        logger.info("Request received for creating user :{}", userRequest.toString());
+    public ResponseEntity<?> saveUser(@Valid @RequestBody UserSaveRequest userSaveRequest) throws Exception {
+        logger.info("Request received for creating user :{}", userSaveRequest.toString());
 
-        var userResponse = userService.saveUser(userRequest);
+        var userResponse = userService.saveUser(userSaveRequest);
 
         if (userResponse.getResultCode() == 0) {
             return new ResponseEntity<>(userResponse, HttpStatus.OK);
@@ -45,9 +48,9 @@ public class UserController {
 
     @PutMapping("/userName")
     @PreAuthorize("hasAuthority('manager')")
-    public ResponseEntity<?> updateUser(@Validated @RequestBody UserRequest userRequest) throws Exception {
-        logger.info("Request received for updating userStatus: {}", userRequest.toString());
-        var userResponse = userService.updateUserByStatus(userRequest);
+    public ResponseEntity<?> updateUser(@Validated @RequestBody UserUpdateRequest userUpdateRequest) throws Exception {
+        logger.info("Request received for updating userStatus: {}", userUpdateRequest.toString());
+        var userResponse = userService.updateUserByStatus(userUpdateRequest);
 
         if (userResponse.getResultCode() == 0) {
             return new ResponseEntity<>(userResponse, HttpStatus.OK);
@@ -59,9 +62,9 @@ public class UserController {
 
     @DeleteMapping("/userName")
     @PreAuthorize("hasAuthority('manager')")
-    public ResponseEntity<?> deleteUserByUserName(@Valid @RequestBody UserRequest userRequest) throws Exception {
-        logger.info("Request received for deleting user: {}", userRequest.toString());
-        var userResponse = userService.deleteUserByUsername(userRequest);
+    public ResponseEntity<?> deleteUserByUserName(@Valid @RequestBody UserDeletedRequest userDeletedRequest) throws Exception {
+        logger.info("Request received for deleting user: {}", userDeletedRequest.toString());
+        var userResponse = userService.deleteUserByUsername(userDeletedRequest);
 
         if (userResponse.getResultCode() == 0) {
             return new ResponseEntity<>(userResponse, HttpStatus.OK);

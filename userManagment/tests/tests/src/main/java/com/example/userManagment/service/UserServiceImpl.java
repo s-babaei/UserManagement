@@ -2,8 +2,7 @@ package com.example.userManagment.service;
 
 
 import com.example.userManagment.model.UserStatus;
-import com.example.userManagment.model.dto.UserRequest;
-import com.example.userManagment.model.dto.UserResponse;
+import com.example.userManagment.model.dto.*;
 import com.example.userManagment.model.entity.User;
 import com.example.userManagment.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,8 +22,6 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
-    UserResponse userResponse;
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -34,10 +31,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse saveUser(UserRequest userRequest) {
+    public UserResponse saveUser(UserSaveRequest userSaveRequest) {
+        UserResponse userResponse = new UserResponse();
         ObjectMapper mapper = new ObjectMapper();
-        User user = mapper.convertValue(userRequest, User.class);
-        user.setPassword(encoder.encode(userRequest.getPassword()));
+        User user = mapper.convertValue(userSaveRequest, User.class);
+        user.setPassword(encoder.encode(userSaveRequest.getPassword()));
         try {
              if (userRepository.findByUsername(user.getUsername()).isPresent()) {
                 logger.error("Error in creating user, username: {}. User with the same username already exists.", user.getUsername());
@@ -58,17 +56,18 @@ public class UserServiceImpl implements UserService {
         return userResponse;
     }
     @Override
-    public UserResponse deleteUserByUsername(UserRequest userRequest) {
+    public UserResponse deleteUserByUsername(UserDeletedRequest userDeletedRequest) {
+        UserResponse userResponse = new UserResponse();
 
         try {
-            Optional<User> finedUser = userRepository.findByUsername(userRequest.getUsername());
+            Optional<User> finedUser = userRepository.findByUsername(userDeletedRequest.getUsername());
             if (finedUser.isPresent()) {
                 userRepository.delete(finedUser.get());
                 logger.info("User deleted successfully, username: {}", finedUser.get().getUsername());
                 userResponse.setResultCode(0);
                 userResponse.setResultMsg("successful");
             } else {
-                logger.info("User not found, username: {}", userRequest.getUsername());
+                logger.info("User not found, username: {}", userDeletedRequest.getUsername());
                 userResponse.setResultCode(404);
                 userResponse.setResultMsg("notFound");
             }
@@ -82,9 +81,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUserByStatus(UserRequest userRequest) throws Exception {
+    public UserResponse updateUserByStatus(UserUpdateRequest userUpdateRequest) throws Exception {
+        UserResponse userResponse = new UserResponse();
+
         ObjectMapper mapper = new ObjectMapper();
-        User user = mapper.convertValue(userRequest, User.class);
+        User user = mapper.convertValue(userUpdateRequest, User.class);
         try {
 
             Optional<User> findByUsername = userRepository.findByUsername(user.getUsername());
