@@ -1,10 +1,14 @@
 package com.example.userManagment.configuration;
 
+import com.example.userManagment.model.UserStatus;
+import com.example.userManagment.model.entity.User;
+import com.example.userManagment.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,13 +18,22 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
 public class JwtService {
+
+    @Autowired
+    UserRepository userRepository;
     public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
         public String generateToken(Authentication authentication,String userName) {
+
+            Optional<User> user = userRepository.findByUsername(userName);
+            if(user.get().getUserStatus().equals(UserStatus.NOTACTIVE)){
+                 return "User is not active";
+            }
             Map<String, Object> claims = new HashMap<>();
 
             claims.put("scopes",authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")));

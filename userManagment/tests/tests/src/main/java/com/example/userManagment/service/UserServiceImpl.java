@@ -39,9 +39,8 @@ public class UserServiceImpl implements UserService {
         User user = mapper.convertValue(userRequest, User.class);
         user.setPassword(encoder.encode(userRequest.getPassword()));
         try {
-
-            if (userRepository.existsByUsername(user.getUsername())) {
-            logger.error("Error in creating user, username: {}. User with the same username already exists.", user.getUsername());
+             if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+                logger.error("Error in creating user, username: {}. User with the same username already exists.", user.getUsername());
                 userResponse.setResultCode(409);
                 userResponse.setResultMsg("User with the same username already exists");
             } else {
@@ -69,12 +68,12 @@ public class UserServiceImpl implements UserService {
                 userResponse.setResultCode(0);
                 userResponse.setResultMsg("successful");
             } else {
-                logger.info("User not found, username: {}", finedUser.get().getUsername());
+                logger.info("User not found, username: {}", userRequest.getUsername());
                 userResponse.setResultCode(404);
                 userResponse.setResultMsg("notFound");
             }
         } catch (Exception e) {
-            logger.error("Error while deleting user", e.getMessage());
+            logger.error("Error while deleting user e: {}", e.getMessage());
             userResponse.setResultCode(500);
             userResponse.setResultMsg("Internal server error");
         }

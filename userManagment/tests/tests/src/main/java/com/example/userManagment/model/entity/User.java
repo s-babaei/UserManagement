@@ -28,16 +28,19 @@ public class User {
     private String lastName;
 
     @Email
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @Column
+    @Column(name = "userStatus")
     private UserStatus userStatus;
 
+    @Column(name = "roles")
     private String roles;
 
 }

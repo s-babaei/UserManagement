@@ -33,7 +33,6 @@ public class AuthenticationController {
     private JwtService jwtService;
 
     @PostMapping("/login")
-//  @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<?> login(@RequestBody @Valid GetTokenRequest getTokenRequest) {
         logger.info("Request received for login user :{}", getTokenRequest.toString());
         GetTokenResponse getTokenResponse = new GetTokenResponse();
@@ -47,7 +46,7 @@ public class AuthenticationController {
                 return new ResponseEntity<>(getTokenResponse, HttpStatus.UNAUTHORIZED);
             }
         } catch (Exception e) {
-            logger.info("Error in login user :{}", getTokenRequest.toString());
+            logger.info("Error in login user :{} e: {}" , getTokenRequest, e.getMessage());
             return new ResponseEntity<>(getTokenResponse, HttpStatus.UNAUTHORIZED);
         }
     }
